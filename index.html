@@ -1,0 +1,109 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charsetutf-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.1/mootools.js"></script>	
+	<style type="text/css">
+		body { background-color:#E0E0E0; }
+	</style>
+</head>
+
+<body>
+
+		<div id="header" style="background-origin:border-box;background-color:3366CC;">
+			<h1 style="padding-top:5px;padding-bottom:5px;color:white;
+				font-style:italic;font-size:14pt;font-family:helvetica;">ifixit</h1></div>
+
+		<div id="gear bag" style="background-color:#FF8533;width:250px;padding-top:5px;padding-bottom:5px;
+			font-family:helvetica;font-size:11pt;margin-left:0.5cm;float:left;">
+			<b>Gear Bag</b> 
+			<div id="content" style="background-color:white;height:85%;width:250px;float:left;"></div>
+		</div>
+		
+		<div id="devices" style="background-color:white;margin-left:350px;width:500px;height:85%;">
+			<p style="background-color:#FF8533;padding-top:3px;padding-bottom:2px;font-family:helvetica;font-size:14pt;">
+			<b>Devices</b></p></div>
+		
+	</div>
+	
+    <script type="text/javascript">
+ 	/*
+	var devRequest = new Request.JSONP({
+        url: 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5',
+	    callbackKey: 'jsoncallback',
+	    onComplete: function(devNames){ 
+			var image;
+			var i = 0;
+			var imageUrl;
+			Object.each(devNames, function(device){
+				var infoRequest = new Request.JSONP({
+					url: 'http://www.ifixit.com/api/guide/1552/api/0.1/device?type=' + device,
+					callbackKey: 'callback',
+					onComplete: function(data){
+						image = Object.subset(data, 'image'); 
+						imageUrl = Object.subset(image, 'text'); 
+						$(imageUrl).set('html', '<img src = ' + imageUrl + '>');}
+				}).send();
+			})}
+	}).send();
+ 
+  
+	
+	
+	//Creates an array for device request JSON responses.	
+	var script = new Element('script');
+	$(script).setProperty('src', 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5');
+	$(script).setProperty('type', 'text/javascript');	
+	*/	
+	var devArray;
+	var devRequest = new Request.JSON({
+        method: 'get',
+        url: 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5',
+	    onSuccess: function(responseJSON, responseText){devArray = function callBack(responseJSON){
+			var head = document.getElementsByTagName("head")[0];
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.onload = scriptLoaded;
+			script.src = responseJSON;
+			head.appendChild(script)}}});
+
+	//Send devRequest when devArray is filled
+	devRequest.send();
+	
+	//Creates an array for device info request JSON responses
+	var infoArray = new Array(); 
+	var i = 0;
+	
+	//For each device in devArray, add the info device request JSON response to the infoArray
+	//Send each infoRequest
+
+	
+	Object.each(devArray, function(device){var infoRequest = new Request.JSON({
+		method: 'get',
+		url: 'http://www.ifixit.com/api/guide/1552/api/0.1/device?type=' + device,
+		onSuccess: function(responseJSON, responseText){
+			var head = document.getElementsByTagName("head")[0];
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.onload = scriptLoaded;
+			script.src = responseJSON;
+			head.appendChild(script);
+			infoArray[i] = function callBack(responseJSON){
+				
+				//Creates a image subset of the device info
+				var imageList = Object.subset(infoArray[i], 'image');
+				
+				//Creates an image url subset from the imageList
+				var imageUrl = Object.subset(imageList, 'text');
+				
+				//For the url, set the innerHTML to an img src
+				var url;
+				$(url).set('html', '<img src = ' + url + '>');
+				
+				i++;}}});
+		
+		infoRequest.send();});
+
+	</script>	
+
+</body>
+</html>
