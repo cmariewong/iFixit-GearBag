@@ -2,108 +2,207 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charsetutf-8">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.1/mootools.js"></script>	
+	<script type="text/javascript" src="http://mootools.net/nightly/build/mootools-more.js"></script>	
 	<style type="text/css">
-		body { background-color:#E0E0E0; }
+		body {
+			background-color:#E0E0E0;
+		}
+		.item {
+			background-color: #FFF;
+			background-position: left top;
+			background-repeat: no-repeat;
+			cursor: move;
+			float: left;
+			height: 110px;
+			margin: 10px;
+			position: relative;
+			width: 110px;
+			padding-bottom: 0.5cm;
+		}
+		.item span {
+			bottom: 0;
+			font-size: 8px;
+			font-weight: bold;
+			left: 0;
+			position: absolute;
+			text-align: center;
+			width: 100%;
+		}
+
+		#content .item {
+			background-position: 50% -22px;
+			border-width: 1px;
+			cursor: default;
+			height: 10px;
+			margin: 5px;
+			width: 10px;
+		}	
 	</style>
 </head>
 
 <body>
-
-		<div id="header" style="background-origin:border-box;background-color:3366CC;">
-			<h1 style="padding-top:5px;padding-bottom:5px;color:white;
-				font-style:italic;font-size:14pt;font-family:helvetica;">ifixit</h1></div>
-
-		<div id="gear bag" style="background-color:#FF8533;width:250px;padding-top:5px;padding-bottom:5px;
-			font-family:helvetica;font-size:11pt;margin-left:0.5cm;float:left;">
-			<b>Gear Bag</b> 
-			<div id="content" style="background-color:white;height:85%;width:250px;float:left;"></div>
-		</div>
-		
-		<div id="devices" style="background-color:white;margin-left:350px;width:500px;height:85%;">
-			<p style="background-color:#FF8533;padding-top:3px;padding-bottom:2px;font-family:helvetica;font-size:14pt;">
-			<b>Devices</b></p></div>
-		
+	<div id="header" style="background-origin:border-box;background-color:3366CC;border: 1px solid #F9F9F9;">
+		<h1 style="padding-top:5px;padding-bottom:5px;color:white;
+			font-style:italic;font-size:14pt;font-family:helvetica;">ifixit
+		</h1>
 	</div>
-	
-    <script type="text/javascript">
- 	/*
-	var devRequest = new Request.JSONP({
-        url: 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5',
-	    callbackKey: 'jsoncallback',
-	    onComplete: function(devNames){ 
-			var image;
-			var i = 0;
-			var imageUrl;
-			Object.each(devNames, function(device){
-				var infoRequest = new Request.JSONP({
-					url: 'http://www.ifixit.com/api/guide/1552/api/0.1/device?type=' + device,
-					callbackKey: 'callback',
-					onComplete: function(data){
-						image = Object.subset(data, 'image'); 
-						imageUrl = Object.subset(image, 'text'); 
-						$(imageUrl).set('html', '<img src = ' + imageUrl + '>');}
-				}).send();
-			})}
-	}).send();
- 
-  
-	
-	
-	//Creates an array for device request JSON responses.	
-	var script = new Element('script');
-	$(script).setProperty('src', 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5');
-	$(script).setProperty('type', 'text/javascript');	
-	*/	
-	var devArray;
-	var devRequest = new Request.JSON({
-        method: 'get',
-        url: 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5',
-	    onSuccess: function(responseJSON, responseText){devArray = function callBack(responseJSON){
-			var head = document.getElementsByTagName("head")[0];
-			var script = document.createElement('script');
-			script.type = 'text/javascript';
-			script.onload = scriptLoaded;
-			script.src = responseJSON;
-			head.appendChild(script)}}});
 
-	//Send devRequest when devArray is filled
-	devRequest.send();
-	
-	//Creates an array for device info request JSON responses
-	var infoArray = new Array(); 
-	var i = 0;
-	
-	//For each device in devArray, add the info device request JSON response to the infoArray
-	//Send each infoRequest
-
-	
-	Object.each(devArray, function(device){var infoRequest = new Request.JSON({
-		method: 'get',
-		url: 'http://www.ifixit.com/api/guide/1552/api/0.1/device?type=' + device,
-		onSuccess: function(responseJSON, responseText){
-			var head = document.getElementsByTagName("head")[0];
-			var script = document.createElement('script');
-			script.type = 'text/javascript';
-			script.onload = scriptLoaded;
-			script.src = responseJSON;
-			head.appendChild(script);
-			infoArray[i] = function callBack(responseJSON){
-				
-				//Creates a image subset of the device info
-				var imageList = Object.subset(infoArray[i], 'image');
-				
-				//Creates an image url subset from the imageList
-				var imageUrl = Object.subset(imageList, 'text');
-				
-				//For the url, set the innerHTML to an img src
-				var url;
-				$(url).set('html', '<img src = ' + url + '>');
-				
-				i++;}}});
+	<div id="gear bag" style="background-color:#FF8533;width:250px;padding-top:5px;padding-bottom:6px;
+		font-family:helvetica;font-size:14pt;margin-left:0.5cm;float:left;">Gear Bag 
+		<div id="content" style="background-color:white;height:85%;width:250px;float:left;border: 1px solid #F9F9F9;"></div>
+	</div>
 		
-		infoRequest.send();});
+	<div id="devices" style="background-color:#FF8533;margin-left:350px;width:500px;border: 1px solid #F9F9F9;padding-top:3px;padding-bottom:2px;
+		font-family:helvetica;font-size:14pt;">Devices
+		<div id="device list" style="background-color:white;width:500px;height:85%;"></div>
+	</div>
 
-	</script>	
+    <script type="text/javascript">
+
+		new Request.JSONP({
+			callbackKey: 'reqInfo',
+			url: 'http://www.ifixit.com/api/0.1/devices?offset=250&limit=20&jsonp=reqInfo',
+			data: {
+				areas : 'stuff',
+				device : 'thing'
+			},
+		}).send(); 
+		
+		function reqInfo(devNames) {
+			Array.each(devNames, function(oneDevice) {
+				new Request.JSONP({
+					callbackKey: 'makeDiv',
+					url:'http://www.ifixit.com/api/0.1/device/' + oneDevice.device + '?jsonp=makeDiv',
+					data: {
+						image: {
+							text: 'not working'
+						},
+						device_info: {
+							name: 'broken'
+						}
+					}
+				}).send();
+			});
+		}
+		
+		function makeDiv(devInfo) {
+			var dev = new Element('div').addClass('item');
+			dev.setStyle('width', '100px');
+			dev.setStyle('font-size', '50%');
+			dev.setStyle('text-align', 'center');
+			if (devInfo.image.text != null) {
+				dev.adopt(
+					new Element('img', {
+						src: devInfo.image.text + '.thumbnail',
+						width: '100px',
+						height: '100px',
+						style: 'padding-bottom : 0.1cm'
+					})
+				)
+			}
+			else {
+				dev.adopt(
+					new Element('img', {
+						src: 'http://www.tiptoptens.com/wp-content/uploads/2011/01/image_not_found.jpg',
+						width: '100px',
+						height: '100px',
+						alt: 'Image Not Available',
+						style: 'padding-bottom : 0.1cm'
+					})
+				)
+			}
+				
+			dev.appendText(devInfo.device_info.name);
+			dev.inject($('device list'));
+		}
+		
+		window.addEvent('domready', function(){
+			$$('.item').addEvent('mousedown', function(event){
+				event.stop();
+				
+				// `this` refers to the element with the .item class
+				var myDevice = this;
+
+				var clone = myDevice.clone().setStyles(myDevice.getCoordinates()).setStyles({
+					opacity: 0.7,
+					position: 'absolute'
+				}).inject($('device list'));
+
+				var drag = new Drag.Move(clone, {
+					droppables: $('content'),
+					onDrop: function(dragging, content) {
+						dragging.destroy();
+						if (content != null) {
+							myDevice.clone().inject(content);
+							content.highlight('#7389AE', '#FFF');
+						}
+					},
+					onEnter: function(dragging, content){
+						content.tween('background-color', '#98B5C1');
+					},
+					onLeave: function(dragging, content){
+						content.tween('background-color', '#FFF');
+					},
+					onCancel: function(dragging){
+						dragging.destroy();
+					}
+				});
+				drag.start(event);
+			});
+		});
+	
+	/*
+			onComplete: function(devNames){ 
+				var image;
+				var i = 0;
+				var imageUrl;
+				Object.each(devNames, function(device){
+					var infoRequest = new Request.JSONP({
+						url: 'http://www.ifixit.com/api/guide/1552/api/0.1/device?type=' + device,
+						callbackKey: 'callback',
+						onComplete: function(data){
+							image = Object.subset(data, 'image'); 
+							imageUrl = Object.subset(image, 'text'); 
+							$(imageUrl).set('html', '<img src = ' + imageUrl + '>');}
+					}).send();
+				})}
+		//Creates an array for device request JSON responses.	
+		var script = new Element('script');
+		$(script).setProperty('src', 'http://www.ifixit.com/api/guide/1552/api/0.1/devices?offset=300&limit=5');
+		$(script).setProperty('type', 'text/javascript');		
+	*/
+		
+	/*	
+		var head = document.getElementsByTagName('script')[0];
+		var script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.async = true;
+				script.src = 'http://www.ifixit.com/api/0.1/devices?offset=0&limit=10&jsonp=fuckBitches';
+				head.appendChild(script);
+		function fuckBitches(bitches) {
+		//For each element in the array, initiate another JSONP callback request for detailed information
+		//Fuck Bitches.
+			for(var i = 0; i < bitches.length; i++) {
+				var head = document.getElementsByTagName('script')[0];
+				var script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.async = false;
+				script.src = 'http://www.ifixit.com/api/0.1/device/' + bitches[i].device + '?jsonp=slapHoes';
+				head.appendChild(script);
+			}
+		}
+		
+		function slapHoes(bitch) {
+		//Make a new div Element
+		//Put an image and device name inside that element
+		//Fuck bitches
+			var e = new Element('div');
+			e.set('html','<img src =\"' + bitch.image.text +'\" />'+bitch.device_info.name);
+			e.inject($('gear bag'));
+		}
+	*/
+	
+	</script>
 
 </body>
 </html>
