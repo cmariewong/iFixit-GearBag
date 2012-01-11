@@ -1,0 +1,6 @@
+The iFixit Gear Bag will be an application that allows iFixit users to build a 
+collection of devices they own. Device images will be retrieved from the iFixit 
+website and displayed in grid format with infinite scrolling. Users will be able 
+to drag and drop the devices into a gear bag. The device collection will be saved
+to the user's browser using HTML5's SQLite storage engine at the browser's HTML5 
+storage layer. The app will be compatible with Google Chrome and Firefox.
