@@ -5,63 +5,63 @@
 	<script type="text/javascript" src="http://mootools.net/nightly/build/mootools-more.js"></script>	
 	<style type="text/css">
 		body {
+			margin-top: 0px;
+			margin-right: 0px;
+			margin-left: 0px;
 			background-color:#E0E0E0;
 		}
+
 		.item {
-			background-color: #FFF;
-			background-position: left top;
+			background-color: white;
+			background-position: center top;
 			background-repeat: no-repeat;
 			cursor: move;
 			float: left;
-			height: 110px;
+			height: 130px;
 			margin: 10px;
 			position: relative;
-			width: 110px;
-			padding-bottom: 0.5cm;
+			width: 100px;
 		}
 		.item span {
-			bottom: 0;
-			font-size: 8px;
-			font-weight: bold;
+			font-size: 10px;
 			left: 0;
 			position: absolute;
 			text-align: center;
+			padding-top: 95px;
 			width: 100%;
 		}
-
+		
 		#content .item {
-			background-position: 50% -22px;
 			border-width: 1px;
 			cursor: default;
-			height: 10px;
+			height: 130px;
 			margin: 5px;
-			width: 10px;
-		}	
+			width: 100px;
+		}
 	</style>
 </head>
 
 <body>
-	<div id="header" style="background-origin:border-box;background-color:3366CC;border: 1px solid #F9F9F9;">
-		<h1 style="padding-top:5px;padding-bottom:5px;color:white;
-			font-style:italic;font-size:14pt;font-family:helvetica;">ifixit
+	<div id="header" style="background-origin:border-box;background-color:3366CC;border-bottom: 1px solid #F9F9F9;height:40px;">
+		<h1 style="padding-top:5px;color:white;margin-bottom:0px;
+			font-style:italic;font-size:20pt;font-family:helvetica;">ifixit
 		</h1>
 	</div>
 
-	<div id="gear bag" style="background-color:#FF8533;width:250px;padding-top:5px;padding-bottom:6px;
-		font-family:helvetica;font-size:14pt;margin-left:0.5cm;float:left;">Gear Bag 
-		<div id="content" style="background-color:white;height:85%;width:250px;float:left;border: 1px solid #F9F9F9;"></div>
+	<div id="gear bag" style="background-color:#FF8533;float:left;margin-left:30px;width:250px;height:95%;border: 1px solid #F9F9F9;
+		font-family:helvetica;font-size:14pt;">Gear Bag 
+		<div id="content" style="background-color:white;width:250px;height:95%;"></div>
 	</div>
 		
-	<div id="devices" style="background-color:#FF8533;margin-left:350px;width:500px;border: 1px solid #F9F9F9;padding-top:3px;padding-bottom:2px;
+	<div id="devices" style="background-color:#FF8533;float:left;margin-left:150px;width:600px;height:90%;border: 1px solid #F9F9F9;padding-top:5px;padding-bottom:6px;
 		font-family:helvetica;font-size:14pt;">Devices
-		<div id="device list" style="background-color:white;width:500px;height:85%;"></div>
+		<div id="device list" style="background-color:white;width:600px;height:95%;"></div>
 	</div>
 
-    <script type="text/javascript">
-
+	<script type="text/javascript">
 		new Request.JSONP({
 			callbackKey: 'reqInfo',
-			url: 'http://www.ifixit.com/api/0.1/devices?offset=250&limit=20&jsonp=reqInfo',
+			url: 'http://www.ifixit.com/api/0.1/devices?offset=150&limit=20&jsonp=reqInfo',
 			data: {
 				areas : 'stuff',
 				device : 'thing'
@@ -86,37 +86,27 @@
 		}
 		
 		function makeDiv(devInfo) {
-			var dev = new Element('div').addClass('item');
-			dev.setStyle('width', '100px');
-			dev.setStyle('font-size', '50%');
-			dev.setStyle('text-align', 'center');
+			var dev = new Element('div', {
+				'class': 'item',
+				styles: {
+					'width': '100px',
+					'font-size': '50%',
+				}
+			});
+			
 			if (devInfo.image.text != null) {
-				dev.adopt(
-					new Element('img', {
-						src: devInfo.image.text + '.thumbnail',
-						width: '100px',
-						height: '100px',
-						style: 'padding-bottom : 0.1cm'
-					})
-				)
-			}
-			else {
-				dev.adopt(
-					new Element('img', {
-						src: 'http://www.tiptoptens.com/wp-content/uploads/2011/01/image_not_found.jpg',
-						width: '100px',
-						height: '100px',
-						alt: 'Image Not Available',
-						style: 'padding-bottom : 0.1cm'
-					})
-				)
+				dev.setStyle('background-image', 'url(' + devInfo.image.text + '.thumbnail)');
+				dev.set('html','<span>' + devInfo.device_info.name + '</span>');
 			}
 				
-			dev.appendText(devInfo.device_info.name);
+			else {
+				dev.setStyle('background-image', 'url(http://3.bp.blogspot.com/_KW3S0od5s5U/S7Srh_vtfoI/AAAAAAAADvI/GwKAaDht3P4/s1600/image_not_found.jpg)');
+				dev.set('html','<span>' + devInfo.device_info.name + '</span>');
+			}
 			dev.inject($('device list'));
 		}
 		
-		window.addEvent('domready', function(){
+		window.addEvent('load', function(){
 			$$('.item').addEvent('mousedown', function(event){
 				event.stop();
 				
@@ -150,6 +140,31 @@
 				drag.start(event);
 			});
 		});
+		
+		function makeScrollbar(content,scrollbar,handle,horizontal,ignoreMouse){
+			var steps = (horizontal?(content.getScrollSize().x - content.getSize().x):(content.getScrollSize().y - content.getSize().y))
+			var slider = new Slider(scrollbar, handle, {	
+				steps: steps,
+				mode: (horizontal?'horizontal':'vertical'),
+				onChange: function(step){
+					// Scrolls the content element in x or y direction.
+					var x = (horizontal?step:0);
+					var y = (horizontal?0:step);
+					content.scrollTo(x,y);
+				}
+			}).set(0);
+			if( !(ignoreMouse) ){
+				// Scroll the content element when the mousewheel is used within the 
+				// content or the scrollbar element.
+				$$(content, scrollbar).addEvent('mousewheel', function(e){	
+					e = new Event(e).stop();
+					var step = slider.step - e.wheel * 30;	
+					slider.set(step);					
+				});
+			}
+			// Stops the handle dragging process when the mouse leaves the document body.
+			$('content').addEvent('mouseleave',function(){slider.drag.stop()});
+		}
 	
 	/*
 			onComplete: function(devNames){ 
@@ -177,27 +192,25 @@
 		var script = document.createElement('script');
 				script.type = 'text/javascript';
 				script.async = true;
-				script.src = 'http://www.ifixit.com/api/0.1/devices?offset=0&limit=10&jsonp=fuckBitches';
+				script.src = 'http://www.ifixit.com/api/0.1/devices?offset=0&limit=10&jsonp=callBack';
 				head.appendChild(script);
-		function fuckBitches(bitches) {
+		function callBack(arr) {
 		//For each element in the array, initiate another JSONP callback request for detailed information
-		//Fuck Bitches.
-			for(var i = 0; i < bitches.length; i++) {
+			for(var i = 0; i < arr.length; i++) {
 				var head = document.getElementsByTagName('script')[0];
 				var script = document.createElement('script');
 				script.type = 'text/javascript';
 				script.async = false;
-				script.src = 'http://www.ifixit.com/api/0.1/device/' + bitches[i].device + '?jsonp=slapHoes';
+				script.src = 'http://www.ifixit.com/api/0.1/device/' + bitches[i].device + '?jsonp=infoCall';
 				head.appendChild(script);
 			}
 		}
 		
-		function slapHoes(bitch) {
+		function infoCall(devInfo) {
 		//Make a new div Element
 		//Put an image and device name inside that element
-		//Fuck bitches
 			var e = new Element('div');
-			e.set('html','<img src =\"' + bitch.image.text +'\" />'+bitch.device_info.name);
+			e.set('html','<img src =\"' + devInfo.image.text +'\" />'+devInfo.device_info.name);
 			e.inject($('gear bag'));
 		}
 	*/
